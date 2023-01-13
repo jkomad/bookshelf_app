@@ -179,7 +179,6 @@ class Bookshelf {
                             if (entry2[0] === 2) {
                                 //Edit the book object
                                 if (entry2[1].firstChild.value.length <= 280) {
-                                    console.log(bookData[entry[0]])
                                     bookData[entry[0]].comment = `(${entry2[1].firstChild.value.length} characters) ${entry2[1].firstChild.value}`
                                 }
                                 else {
@@ -212,7 +211,6 @@ class Bookshelf {
             }       
             //This method prevents the click of any comment buttons from flipping the book
             e.stopPropagation()
-            console.log(bookData)                                        
         })
         //Add event listener to deleteBtn so that instance will run the function if clicked
         //Deleting an element should re-render the entire array of books 
