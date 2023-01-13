@@ -1,0 +1,173 @@
+body {
+    margin: 0;
+    background-color: #B9AC97;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.topnav {
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    width: 100%;
+    font-size: x-large;
+}
+
+.leftHeader {
+    position: absolute;
+    left: 50px;
+}
+
+.rightHeader {
+    position: absolute;
+    right: 0;
+}
+
+.rightHeader a {
+    margin: 0 50px 0 50px;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+a:hover {
+    color: #CFC6BA;
+}
+
+form {
+    display: flex;
+    align-items: center;
+}
+
+form * {
+    margin: 10px;
+    color: black;
+    border: none;
+    border-radius: 15px;
+    font-size: large;
+}
+
+.comment {
+    text-overflow: ellipsis;
+}
+
+input[type='button'] {
+    margin-top: 10px;
+    background-color: white;
+    transition: background-color 0.3s;
+}
+
+input[type='button']:hover {
+    cursor: pointer;
+    background-color: #CFC6BA
+}
+
+input:placeholder-shown {
+    background-color: ivory;
+    border: solid #B6B6B6 2px;
+    border-radius: 20px;
+}
+
+.dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown * {
+    box-sizing: border-box;
+}
+
+.select {
+    position: relative;
+    border-radius: 30px;
+    background-color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.selected {
+    text-align: center;
+}
+
+.select:hover {
+    background-color: #CFC6BA;
+}
+
+#sortMenu {
+    flex-direction: column;
+    text-align: center;
+    list-style: none;
+    padding: 2px 5px;
+    opacity: 0;
+    display: none;
+}
+
+#sortMenu li {
+    color: black;
+    background-color: white;
+    margin: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#sortMenu li:hover {
+    background-color: #CFC6BA;
+}
+
+.books {    
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.book {
+    position: relative;
+    min-height: 400px;
+    width: 350px;
+    margin: 10px;
+    padding: 10px;
+    background-color: #FAF9F6;
+    border-radius: 75px;
+    text-align: center;
+}
+
+.book .userInterface {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.userInterface * {
+    font-size: large;
+    margin: 5px;
+    border: black;
+    border-radius: 10px;
+}
+
+.comment {
+    position: relative;
+    display: none;
+    color: black;
+}
+
+.userInterface button {
+    background-color: white;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.userInterface button:hover {
+    cursor: pointer;
+    background-color: #CFC6BA
+}

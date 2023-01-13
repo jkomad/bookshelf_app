@@ -1,4 +1,4 @@
-const bookData = [
+let bookData = [
   {
     author: ["Burroughs, Edgar Rice"],
     language: "en",
