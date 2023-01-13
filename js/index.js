@@ -17,62 +17,70 @@ let clickCnt = 0
 let sortClick = false
 
 let titleClick = false
+let titleClickCnt = 0
 const sortByTitle = (book1, book2) => {
-    //Use a boolean value to track whether or not the button has already been pressed. Default = false
+    const newBook1 = book1.title.toLowerCase()
+    const newBook2 = book2.title.toLowerCase()
     //In order to sort by title, I want to pass the value of the title property for each book into the sort function
-    if (book1.title.toLowerCase() === book2.title.toLowerCase()) {
+    if (newBook1 === newBook2) {
         return 0
     }
     //first, determine which book is longer
     const checkTitle = () => {
-        return book1.title.length > book2.title.length ? book1.title : book2.title
+        return newBook1.length > newBook2.length ? newBook1 : newBook2
     }
     const longestTitle = checkTitle()
     //The length of the longest book helps determine, how long we want to run a loop
     for (let i=0; i < longestTitle.length; i++) {
-        if (book1.title[i] === undefined) {
+        if (newBook1[i] === undefined) {
             return -1
         }
-        if (book2.title[i] === undefined) {
+        if (newBook2[i] === undefined) {
             return 1
         }
-        else if (book1.title[i].toLowerCase() === book2.title[i].toLowerCase()) {
+        else if (newBook1[i] === newBook2[i]) {
             continue
         }
         else {
-            return book1.title[i].toLowerCase() < book2.title[i].toLowerCase() ? -1 : 1
+            return newBook1[i] < newBook2[i] ? -1 : 1
         }
     }
 }
 let authorClick = false
+let authorClickCnt = 0
 const sortByAuthor = (book1, book2) => {
-    if (book1.author.toString().toLowerCase() === book2.author.toString().toLowerCase()) {
+    const newBook1 = book1.author.toString().toLowerCase()
+    const newBook2 = book2.author.toString().toLowerCase()
+    if (newBook1 === newBook2) {
         return 0
     }
     const checkName = () => {
-        return book1.author.toString().length > book2.author.toString().length ? book1.author.toString() : book2.author.toString()
+        return newBook1.length > newBook2.length ? newBook1 : newBook2
     }
     const longestName = checkName()
     for (let i = 0; i < longestName.length; i++) {
-        if (book1.author[i] === undefined) {
+        if (newBook1[i] === undefined) {
             return -1
         }
-        if (book2.author[i] === undefined) {
+        if (newBook2[i] === undefined) {
             return 1
         }
-        else if (book1.author[i].toString().toLowerCase() === book2.author[i].toString().toLowerCase()) {
+        else if (newBook1[i] === newBook2[i]) {
             continue
         }
         else {
-            return book1.author[i].toString() < book2.author[i].toString() ? -1 : 1
+            return newBook1[i] < newBook2[i] ? -1 : 1
         }
     }
 }
 let subjectClick = false
+let subjectClickCnt = 0
 const sortBySubject = (book1, book2) => {
+    const newBook1 = book1.subject.toString()
+    const newBook2 = book2.subject.toString()
     //Sorting by number of subjects (ascending order)
     if (book1.subject.length === book2.subject.length) {
-        return 0
+        return newBook1.length < newBook2.length ? -1 : newBook1.length > newBook2.length ? 1 : 0
     }
     else {
         return book1.subject.length < book2.subject.length ? -1 : 1
@@ -95,8 +103,9 @@ class Book {
 }
 
 class Bookshelf {
-    constructor(obj, i) {
+    constructor(obj) {
         this.obj = obj
+        this.flip = false
     }
     createBook() {
         //Check to see if any sort buttons have been used (check click count)
@@ -144,9 +153,12 @@ class Bookshelf {
         deleteBtn.classList.add('deleteBtn')
         deleteBtn.innerText = 'Delete book'
 
+        comment.addEventListener('click', (e) => {
+            e.stopPropagation()
+        })
         //Add event listener to comment buttons so that the comment.innerText of any given book is edited to the current value of the comment input box. book object will also be adjusted (add comment property)
         //this.comment defaults to false
-        commentBtn.addEventListener('click', () => {
+        commentBtn.addEventListener('click', (e) => {
             if (this.obj.comment === '') {
                 comment.style.display = 'inline-block'
                 commentBtn.innerText = 'Save Comment'
@@ -164,9 +176,10 @@ class Bookshelf {
                 for (const entry of booksEleChildren.entries()) {
                     if (book.innerText === entry[1].innerText) {
                         for (const entry2 of bookEleChildren.entries()) {
-                            if (entry2[0] === 4) {
+                            if (entry2[0] === 2) {
                                 //Edit the book object
                                 if (entry2[1].firstChild.value.length <= 280) {
+                                    console.log(bookData[entry[0]])
                                     bookData[entry[0]].comment = `(${entry2[1].firstChild.value.length} characters) ${entry2[1].firstChild.value}`
                                 }
                                 else {
@@ -196,11 +209,14 @@ class Bookshelf {
                         new Bookshelf(book).createBook()
                     })
                 }
-            }                                                
+            }       
+            //This method prevents the click of any comment buttons from flipping the book
+            e.stopPropagation()
+            console.log(bookData)                                        
         })
         //Add event listener to deleteBtn so that instance will run the function if clicked
         //Deleting an element should re-render the entire array of books 
-        deleteBtn.addEventListener('click', function deleteBook() {
+        deleteBtn.addEventListener('click', (e) => {
             const booksEleChildren = booksEle.childNodes
             for (const entry of booksEleChildren.entries()) {
                 if (book.innerText === entry[1].innerText) {
@@ -215,10 +231,21 @@ class Bookshelf {
                     })
                 }
             }
+            e.stopPropagation()
         })
         //Append new info to book element and append said element to the 'books' parent container
+        //Add an event listener onto the book itself to make it so that only certain information is displayed at a time
+        book.addEventListener('click', () => {
+            this.flip = !this.flip
+            if (this.flip === true) {
+                book.replaceChildren(language, subject, userInterface)
+            }
+            else {
+                book.replaceChildren(title, author, userInterface)
+            }
+        })
         userInterface.append(comment,commentBtn,deleteBtn)
-        book.append(title,author,language,subject,userInterface)
+        book.append(title,author,userInterface)
         booksEle.append(book)
     }
 }
@@ -313,6 +340,7 @@ sortTitle.addEventListener('click', () => {
     //Click defaults to false. once clicked, titleClick === true
     //Check if the button has already been clicked at least once
     titleClick =! titleClick
+    titleClickCnt++
     sortClick =! sortClick
     const selected = document.querySelector('.selected')
 
@@ -321,7 +349,7 @@ sortTitle.addEventListener('click', () => {
         sortMenu.style.opacity = 1;
         sortMenu.style.display = 'block'
     }
-    if (sortClick === false) {
+    else {
         sortMenu.style.opacity = 0;
         sortMenu.style.display = 'none'
     }
@@ -333,19 +361,26 @@ sortTitle.addEventListener('click', () => {
     //sort the bookData array then run a map function to re-render sorted book
 
     if (titleClick === false) {
-        bookData.sort(sortByTitle).reverse()
+        bookData.reverse()
         selected.innerText = 'Sorting books by title (Z-A)'
+    }
+    else if (titleClick === true && titleClickCnt > 1) {
+        bookData.reverse()
+        selected.innerText = 'Sorting books by title (A-Z)'
     }
     else {
         bookData.sort(sortByTitle)
         selected.innerText = 'Sorting books by title (A-Z)'
     }
     bookData.map((book) => new Bookshelf(book).createBook())
+    console.log(bookData)
+    console.log('break')
 })
 
 const sortAuthor = document.querySelector('#sortByAuthor') 
 sortAuthor.addEventListener('click', () => {
-    titleClick =! titleClick
+    authorClick =! authorClick
+    authorClickCnt++
     sortClick = !sortClick
     const selected = document.querySelector('.selected')
 
@@ -354,7 +389,7 @@ sortAuthor.addEventListener('click', () => {
         sortMenu.style.opacity = 1;
         sortMenu.style.display = 'block'
     }
-    if (sortClick === false) {
+    else {
         sortMenu.style.opacity = 0;
         sortMenu.style.display = 'none'
     }
@@ -362,9 +397,13 @@ sortAuthor.addEventListener('click', () => {
     const booksEle = document.querySelector('.books')
     booksEle.innerText = ''
 
-    if (titleClick === false) {
-        bookData.sort(sortByAuthor).reverse()
+    if (authorClick === false) {
+        bookData.reverse()
         selected.innerText = 'Sorting books by author (Z-A)'
+    }
+    else if (authorClick === true && authorClickCnt > 1) {
+        bookData.reverse()
+        selected.innerText = 'Sorting books by author (A-Z)'
     }
     else {
         bookData.sort(sortByAuthor)
@@ -375,7 +414,8 @@ sortAuthor.addEventListener('click', () => {
 
 const sortSubject = document.querySelector('#sortBySubject') 
 sortSubject.addEventListener('click', () => {
-    titleClick =! titleClick
+    subjectClick =! subjectClick
+    subjectClickCnt++
     sortClick = !sortClick
     const selected = document.querySelector('.selected')
 
@@ -384,7 +424,7 @@ sortSubject.addEventListener('click', () => {
         sortMenu.style.opacity = 1;
         sortMenu.style.display = 'block'
     }
-    if (sortClick === false) {
+    else {
         sortMenu.style.opacity = 0;
         sortMenu.style.display = 'none'
     }
@@ -392,15 +432,21 @@ sortSubject.addEventListener('click', () => {
     const booksEle = document.querySelector('.books')
     booksEle.innerText = ''
 
-    if (titleClick === false) {
-        bookData.sort(sortBySubject).reverse()
+    if (subjectClick === false) {
+        bookData.reverse()
         selected.innerText = 'Sorting books by number of topics (descending)'
+    }
+    else if (subjectClick === true && subjectClickCnt > 1) {
+        bookData.reverse()
+        selected.innerText = 'Sorting books by number of topics (ascending)'
     }
     else {
         bookData.sort(sortBySubject)
         selected.innerText = 'Sorting books by number of topics (ascending)'
     }
     bookData.map((book) => new Bookshelf(book).createBook())
+    bookData.forEach((book) => console.log(book.subject.length))
+    console.log('break')
 })
 
 //View entire bookshelf after searching for something
@@ -422,5 +468,3 @@ bookData = currentBookData
 //In this map function, I've updated the bookData array and set it equal to the currentBookData array in order to display all the elements of the array as instances of the book class instead of regular objects
 
 bookData.map((book) => new Bookshelf(book).createBook())
-
-console.log(bookData)
